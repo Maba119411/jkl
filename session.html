@@ -9,107 +9,46 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Temas de ayuda</title>
-<meta name="viewport" content="width=device-width", user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/indexsession.css">
-</head>
 <body>
+<sql:setDataSource
+        var="myDS"
+        driver="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://localhost:3306/proyecto"
+        user="root" password="1234"
+    />
 
-
-<%
-
-
-String username=request.getParameter("Username");
-String password=request.getParameter("Password");
-
-Class.forName("com.mysql.jdbc.Driver");
-
-Connection con=DriverManager.getConnection("jdbc:mysql://besr1qfo9zn8tnjadvqk-mysql.services.clever-cloud.com:3306/besr1qfo9zn8tnjadvqk","uh4vgokshgah6jos","aZEmwr6EcIwZTeIYtLYB");
-
-Statement st=con.createStatement();
-
-String query="select Username, Password, Email, Telephone "; 
-query += "from usuarios where Username = '"+username+"' and password = '"+password+"'";
-
-ResultSet rs=st.executeQuery(query);
-int encontrado = 0;
-String name;
-while(rs.next())
-{
-encontrado=1;
- name = rs.getString(1);
- session.setAttribute( "theName", name );
- 
- %>
-<p><b><% out.println("Bienvenido: " + rs.getString(1) );%></b></p>
-<% 
-}
-
-	
-if (encontrado==1)
-{      
-	  
-	   
-	   //String name = request.getParameter( "username" );
-	   //session.setAttribute( "theName", name );
-	
-}
-else
-{
-   out.println("Usuario No registrado...");
-   response.sendRedirect("session3.jsp");
-}
-
-
-%>
-
-
-<br />
-<h1 align="center">Santi´s PC Helpdesk</h1>
-<br>
-<h3 align="left" >Temas de ayuda</h3>
-
-<div align="left">
-<table border="1" cellpadding="5" width=50%>
-
-<tr>
-<th>1-</th>
-<th> <a href=registrop.jsp?Username=<%=request.getParameter("Username")%>&Password=<%=request.getParameter("Password")%> >Registrar Producto</a> </th>
-</tr>
-
-<tr>
-<th>2-</th>
-<th> <a href=incidencia.jsp?Username=<%=request.getParameter("Username")%>&Password=<%=request.getParameter("Password")%> >Nueva incidencia</a> </th>
-</tr>
-
-<tr>
-<th>3-</th>
-<th> <a href=opciones.jsp?Username=<%=request.getParameter("Username")%>&Password=<%=request.getParameter("Password")%>>Ayuda rápida</a> </th>
-</tr>
-
-<tr>
-<th>4-</th>
-<th> <a href=resueltos.jsp?Username=<%=request.getParameter("Username")%>&Password=<%=request.getParameter("Password")%>>Incidencias resueltas</a> </th>
-</tr>
-
-<tr>
-<th>5-</th>
-<th> <a href=abiertos.jsp?Username=<%=request.getParameter("Username")%>&Password=<%=request.getParameter("Password")%>>Incidencias abiertas</a> </th>
-</tr>
-
-<tr>
-<th>6-</th>
-<th> <a target="_blank" href=chat/sessionusuario.jsp?Username=<%=request.getParameter("Username")%>&Password=<%=request.getParameter("Password")%>>LiveChat</a> </th>
-</tr>
-
-</table>
-</div>
-<br/>
-<br/>
-<A HREF="close.jsp">Cerrar Sesión</A><br/>
-
+    
+     
+    <sql:query var="listBancos"   dataSource="${myDS}">
+        SELECT * FROM incidencias where estado_incid = 'resuelto' and usuario_incid='<%= request.getParameter("Username") %>';
+    </sql:query>
+     
+    <div align="center">
+        <table border="1" cellpadding="5">
+            <caption><h2 align="center">Lista de las incidencias resueltas</h2></caption>
+            <tr>
+                <th># de incidencia</th>
+                <th>Fecha</th>
+                <th>Problema</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Ver solucion</th>
+            </tr>
+            <c:forEach var="crud1" items="${listBancos.rows}">
+                <tr>
+                    <td><c:out value="${crud1.n_incidencia}" /></td>
+                    <td><c:out value="${crud1.fecha_incid}" /></td>
+                    <td><c:out value="${crud1.problema_incid}" /></td>
+                    <td><c:out value="${crud1.tipo_incid}" /></td>
+                    <td><c:out value="${crud1.estado_incid}" /></td>
+                    <td><a href=soluciones_problemas.jsp?n_incidencia=${crud1.n_incidencia}&Username=<%= request.getParameter("Username") %>&Password=<%=request.getParameter("Password")%>>ver</a></td>
+                </tr>
+            </c:forEach>
+        </table>
+        <table>  
+        <td><a href=session.jsp?Username=<%=request.getParameter("Username")%>&Password=<%=request.getParameter("Password")%>>volver </a> </td><td></td>
+        </table>
+        
+    </div>
 </body>
 </html>
