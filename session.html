@@ -13,15 +13,15 @@
 <sql:setDataSource
         var="myDS"
         driver="com.mysql.jdbc.Driver"
-        url="jdbc:mysql://localhost:3306/proyecto"
-        user="root" password="1234"
+        url="jdbc:mysql://besr1qfo9zn8tnjadvqk-mysql.services.clever-cloud.com/besr1qfo9zn8tnjadvqk"
+        user="uh4vgokshgah6jos" password="aZEmwr6EcIwZTeIYtLYB"
     />
 
     
      
-    <sql:query var="listBancos"   dataSource="${myDS}">
+    <sql:query var="listBancos"   dataSource="${myDS}"
         SELECT * FROM incidencias where estado_incid = 'resuelto' and usuario_incid='<%= request.getParameter("Username") %>';
-    </sql:query>
+    /sql:query>
      
     <div align="center">
         <table border="1" cellpadding="5">
